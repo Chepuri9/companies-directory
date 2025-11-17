@@ -1,42 +1,209 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  font-family: "inter";
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+body:hover {
+  overflow: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "inter" !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+p,
+span,
+div,
+ul,
+ol,
+li,
+label,
+a {
+  font-family: "inter" !important;
+}
+* {
+  font-family: "inter";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.sticky-top {
+  z-index: 1020; /* Ensure it stays above normal content */
+  background: white; /* Prevent transparency issues */
 }
 
-.card {
-  padding: 2em;
+.custom-rate .ant-rate-star {
+  font-size: 20px !important;
 }
 
-.read-the-docs {
-  color: #888;
+/* Default unselected star color */
+.custom-rate .ant-rate-star-first,
+.custom-rate .ant-rate-star-second {
+  color: #eed9cb !important;
+}
+
+/* Selected star color */
+.custom-rate .ant-rate-star-full .ant-rate-star-first,
+.custom-rate .ant-rate-star-full .ant-rate-star-second {
+  color: #ffa500 !important;
+}
+
+/* Hover state - only the hovered star changes color */
+.custom-rate .ant-rate-star:hover .ant-rate-star-first,
+.custom-rate .ant-rate-star:hover .ant-rate-star-second {
+  color: #ffa500 !important;
+}
+
+/* Remove the default hover effect that affects all stars */
+.custom-rate .ant-rate-star:hover ~ .ant-rate-star .ant-rate-star-first,
+.custom-rate .ant-rate-star:hover ~ .ant-rate-star .ant-rate-star-second {
+  color: #eed9cb !important;
+}
+
+.ant-drawer-content-wrapper {
+  box-shadow: none !important;
+  padding: 20px !important;
+}
+
+/* Force checkbox color when checked */
+.form-check-input:checked {
+  background-color: #334f3e !important;
+  border-color: #334f3e !important;
+}
+
+/* Force checkbox border/focus ring */
+.form-check-input:focus {
+  border-color: #334f3e !important;
+  box-shadow: 0 0 0 0.25rem rgba(51, 79, 62, 0.25) !important;
+}
+
+/* Optional: hover border color */
+.form-check-input:hover {
+  border-color: #334f3e !important;
+}
+.form-check-input,
+.form-check-label {
+  cursor: pointer;
+}
+
+.form-check-input {
+  border: 2px solid #334f3e !important;
+  border-radius: 4px; /* optional, for better appearance */
+}
+
+.form-check-input:focus {
+  box-shadow: none;
+  border-color: #334f3e;
+}
+
+.ant-drawer-open {
+  overflow: hidden !important;
+  padding: 20px !important;
+}
+
+/* html {
+  overflow-y: scroll;
+} */
+
+body {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
+
+.react-tel-input {
+  width: 100% !important;
+}
+
+.react-tel-input .form-control {
+  width: 100% !important;
+  height: 38px; /* match Bootstrap input height */
+}
+
+/* Remove all image loading animations and transitions */
+img {
+  /* Disable any transitions on images */
+  transition: none !important;
+  animation: none !important;
+
+  /* Ensure images appear instantly when loaded */
+  opacity: 1 !important;
+
+  /* Remove any transform effects */
+  transform: none !important;
+
+  /* Disable progressive rendering effects */
+  image-rendering: auto;
+
+  /* Ensure proper display */
+  display: block;
+  max-width: 100%;
+  /* height: auto; */
+}
+
+/* Specifically target MUI image components */
+.MuiAvatar-img,
+.MuiCardMedia-img,
+img[class*="MuiImage"],
+img[class*="mui"] {
+  transition: none !important;
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Remove lazy loading fade effects */
+img[loading="lazy"] {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Remove any fade-in effects from image containers */
+div[class*="image"],
+div[class*="Image"],
+figure,
+picture {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable intersection observer animations */
+img[data-src],
+img[data-lazy] {
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* Remove skeleton/placeholder animations */
+.image-placeholder,
+.skeleton,
+[class*="skeleton"] {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Force immediate visibility for all image-related elements */
+img,
+svg,
+canvas,
+video {
+  will-change: auto !important;
+  backface-visibility: visible !important;
+}
+
+img {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+img.loaded {
+  opacity: 1;
 }

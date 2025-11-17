@@ -1,0 +1,12 @@
+{
+  "logo": "/logo.svg",
+  "user": {
+    "name": "John Doe",
+    "avatar": "/avatar.png"
+  },
+  "nav": [
+    { "label": "Professional", "to": "/professional" },
+    { "label": "Direction", "to": "/direction" }
+  ],
+  "notifications": 3
+}

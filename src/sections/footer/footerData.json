@@ -1,0 +1,53 @@
+{
+  "footers": [
+    {
+      "id": 1,
+      "title": "Company",
+      "footerDetails": [
+        { "id": 101, "title": "About Us", "url": "/about", "sequence": 1 },
+        { "id": 102, "title": "Careers", "url": "/careers", "sequence": 2 },
+        { "id": 103, "title": "Press", "url": "/press", "sequence": 3 }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Resources",
+      "footerDetails": [
+        { "id": 201, "title": "Blog", "url": "/blog", "sequence": 1 },
+        { "id": 202, "title": "Guides", "url": "/guides", "sequence": 2 },
+        { "id": 203, "title": "Docs", "url": "/docs", "sequence": 3 }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Support",
+      "footerDetails": [
+        { "id": 301, "title": "Contact", "url": "/contact", "sequence": 1 },
+        { "id": 302, "title": "Help Center", "url": "/help", "sequence": 2 },
+        {
+          "id": 303,
+          "title": "Privacy Policy",
+          "url": "/privacy",
+          "sequence": 3
+        }
+      ]
+    }
+  ],
+  "socialMedia": [
+    {
+      "id": 1,
+      "platform": "facebook",
+      "link": "https://facebook.com/yourcompany"
+    },
+    {
+      "id": 2,
+      "platform": "twitter",
+      "link": "https://twitter.com/yourcompany"
+    },
+    {
+      "id": 3,
+      "platform": "instagram",
+      "link": "https://instagram.com/yourcompany"
+    }
+  ]
+}
