@@ -7,6 +7,12 @@
 *.obj
 *.elf
 
+# node_modules
+/node_modules
+
+#build files
+/build
+
 # Linker output
 *.ilk
 *.map
