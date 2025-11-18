@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Container,
   Box,
@@ -13,7 +14,8 @@ import { CompanyCard } from "../../components/companyCard";
 import type { Company } from "../../components/models/company";
 import { useSearchParams } from "react-router-dom";
 import { mockCompanies } from "../../constants/mock-data";
-import { useMemo, useState, useEffect } from "react";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import { SortType } from "../../components/enums/sortType";
 
 export default function CompaniesPage() {
@@ -23,33 +25,16 @@ export default function CompaniesPage() {
   const location = searchParams.get("location");
   const industry = searchParams.get("industry");
   const sort = searchParams.get("sort");
-  console.log("mockCompanies", mockCompanies);
+
+  const pageSize = 8; // must be before hooks usage
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
-  console.log("searchQuery", searchQuery);
-  console.log("locarion,industry,sort ", location, industry, sort);
-
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    try {
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 500);
-
-      return () => clearTimeout(timer);
-    } catch (err) {
-      console.log(err);
-      setError(err instanceof Error ? err.message : "Failed to load companies");
-      setLoading(false);
-    }
-  }, [searchQuery, location, industry]);
-
+  // Filter data based on searchQuery/location/industry & sorting
   const filteredCompanies = useMemo(() => {
     let filtered = [...mockCompanies];
-    console.log("befor Serach", filtered);
 
     if (searchQuery) {
       const lowerSearch = searchQuery.toLowerCase();
@@ -57,40 +42,27 @@ export default function CompaniesPage() {
         company.name.toLowerCase().includes(lowerSearch)
       );
     }
-    console.log("After Serach", filtered);
-    console.log("befor location", filtered);
-    if (location && location.toLowerCase() !== "All".toLowerCase()) {
+
+    if (location && location.toLowerCase() !== "all") {
       filtered = filtered.filter(
         (company) => company.location.toLowerCase() === location.toLowerCase()
       );
-    } else if (location && location.toLowerCase() === "All".toLowerCase()) {
-      filtered = [...filtered];
     }
 
-    console.log("After location", filtered);
-    console.log("before industry", filtered);
-
-    if (industry && industry.toLowerCase() !== "All".toLowerCase()) {
+    if (industry && industry.toLowerCase() !== "all") {
       filtered = filtered.filter(
         (company) => company.industry.toLowerCase() === industry.toLowerCase()
       );
-    } else if (industry && industry.toLowerCase() === "All".toLowerCase()) {
-      filtered = [...filtered];
     }
-
-    console.log("after industry", filtered);
 
     filtered.sort((a, b) => {
       switch (sort) {
         case SortType.ASC:
           return a.rating - b.rating;
-
         case SortType.DESC:
           return b.rating - a.rating;
-
         case SortType.RELEVANCE:
           return 0;
-
         default:
           return 0;
       }
@@ -99,12 +71,47 @@ export default function CompaniesPage() {
     return filtered;
   }, [searchQuery, location, industry, sort]);
 
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredCompanies.length / pageSize);
+
+  // Slice filtered data for the current page
+  const currentPageData = useMemo(() => {
+    const offset = (page - 1) * pageSize;
+    return filteredCompanies.slice(offset, offset + pageSize);
+  }, [filteredCompanies, page, pageSize]);
+
+  // Reset page to 1 when filters or sort change
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, location, industry, sort]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    setError(null);
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, location, industry, sort, page]);
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    window.scrollTo(0, 0);
+    setPage(value);
+  };
+
   return (
     <Box
       sx={{
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
+        mb: 2,
         bgcolor: "background.default",
       }}
     >
@@ -158,7 +165,7 @@ export default function CompaniesPage() {
             </Box>
           ) : (
             <Grid container spacing={3}>
-              {filteredCompanies.map((company: Company) => (
+              {currentPageData.map((company: Company) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={company.id}>
                   <CompanyCard company={company} />
                 </Grid>
@@ -168,26 +175,24 @@ export default function CompaniesPage() {
         </Container>
       </Box>
 
-      {/* Footer */}
-      <Box sx={{ bgcolor: "primary.main", color: "white", py: 4, mt: "auto" }}>
-        <Container maxWidth="lg">
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              CompanyHub
-            </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-              © 2025 CompanyHub. All rights reserved.
-            </Typography>
-          </Box>
-        </Container>
+      {/* Pagination */}
+      <Box sx={{ width: "100%", mb: 5 }}>
+        <Stack
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          spacing={2}
+        >
+          <Pagination
+            count={totalPages}
+            page={page}
+            color="primary"
+            onChange={handlePageChange}
+          />
+        </Stack>
       </Box>
     </Box>
   );

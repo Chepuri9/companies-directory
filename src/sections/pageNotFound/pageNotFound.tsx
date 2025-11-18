@@ -1,21 +1,24 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface NotFoundProps {
   title?: string;
   message?: string;
-  imageSrc?: string;
   buttonText?: string;
   onButtonClick?: () => void;
   hidebutton?: boolean;
 }
 
 const PageNotFound: React.FC<NotFoundProps> = ({
-  title,
-  message,
-  buttonText,
-  onButtonClick = () => {},
+  title = "Page Not Found",
+  message = "The page you are looking for might have been removed or is temporarily unavailable.",
+  buttonText = "Go Back Home",
+  onButtonClick,
 }) => {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   return (
     <Box
       minHeight="80vh"
@@ -25,50 +28,61 @@ const PageNotFound: React.FC<NotFoundProps> = ({
       alignItems="center"
       textAlign="center"
       px={2}
+      sx={{
+        background: `
+          radial-gradient(circle, ${theme.palette.primary.light} 0%, transparent 70%),
+          radial-gradient(circle, #ffffff 0%, transparent 50%)`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        color: "#fff",
+      }}
     >
       <Typography
-        fontWeight={200}
+        fontWeight={700}
         mb={4}
         sx={{
           fontSize: {
-            xs: "24px", // small screens
-            sm: "32px", // tablets
-            md: "42px", // desktops
+            xs: "28px",
+            sm: "36px",
+            md: "48px",
           },
           lineHeight: "110%",
-          fontWeight: 400,
-          textAlign: "center",
         }}
       >
         {title}
       </Typography>
 
-      <Typography variant="h6" fontWeight={600} gutterBottom>
+      <Typography
+        sx={{ color: "text.primary" }}
+        variant="h6"
+        fontWeight={600}
+        gutterBottom
+      >
         We couldn't find what you were looking for
       </Typography>
 
-      <Typography variant="body1" mb={3}>
+      <Typography variant="body1" mb={4} maxWidth={600}>
         {message}
       </Typography>
 
-      {onButtonClick && buttonText && (
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#334F3E",
-            borderRadius: 1,
-            px: 4,
-            py: 1.5,
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "#2f3e30",
-            },
-          }}
-          onClick={onButtonClick}
-        >
-          {buttonText}
-        </Button>
-      )}
+      <Button
+        onClick={() => navigate("/")}
+        variant="contained"
+        sx={{
+          backgroundColor: "#ffffff88",
+          color: theme.palette.primary.main,
+          borderRadius: 2,
+          px: 5,
+          py: 1.5,
+          textTransform: "none",
+          fontWeight: 600,
+          "&:hover": {
+            backgroundColor: "#ffffffaa",
+          },
+        }}
+      >
+        {buttonText}
+      </Button>
     </Box>
   );
 };
