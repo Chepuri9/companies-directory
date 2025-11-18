@@ -82,6 +82,7 @@ export default function CompaniesPage() {
 
   // Reset page to 1 when filters or sort change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
   }, [searchQuery, location, industry, sort]);
 
@@ -101,6 +102,7 @@ export default function CompaniesPage() {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
+    console.log(event);
     window.scrollTo(0, 0);
     setPage(value);
   };

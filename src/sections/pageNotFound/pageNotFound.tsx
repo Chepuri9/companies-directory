@@ -14,7 +14,6 @@ const PageNotFound: React.FC<NotFoundProps> = ({
   title = "Page Not Found",
   message = "The page you are looking for might have been removed or is temporarily unavailable.",
   buttonText = "Go Back Home",
-  onButtonClick,
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
