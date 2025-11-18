@@ -16,24 +16,36 @@ import {
   useTheme,
   useMediaQuery,
   Container,
+  InputBase,
+  Paper,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavLink, useNavigate } from "react-router-dom";
 import headerData from "./headerData.json";
-import { Business as BusinessIcon } from "@mui/icons-material";
+import {
+  Business as BusinessIcon,
+  Search as SearchIcon,
+} from "@mui/icons-material";
 
 const ResponsiveHeader: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => setDrawerOpen((open) => !open);
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      navigate(
+        `/companies?q=${search}&industry=All&location=All`, { replace: true }
+      );
+    }
+  };
 
-  const navigate = useNavigate();
   const drawerContents = (
     <Box sx={{ width: 250, p: 2 }}>
-      {/* Display logo */}
       <Button onClick={() => navigate("/")} sx={{ mb: 2, textAlign: "center" }}>
         <Box
           sx={{
@@ -47,9 +59,8 @@ const ResponsiveHeader: React.FC = () => {
           }}
         >
           <BusinessIcon sx={{ color: "white", fontSize: 24 }} />
-        </Box>{" "}
+        </Box>
       </Button>
-
       <Divider />
       <List>
         {headerData.nav.map((item) => (
@@ -70,9 +81,7 @@ const ResponsiveHeader: React.FC = () => {
           </ListItem>
         ))}
       </List>
-
       <Divider />
-
       <List>
         <ListItem>
           <ListItemIcon>
@@ -115,7 +124,7 @@ const ResponsiveHeader: React.FC = () => {
               minHeight: 64,
             }}
           >
-            {/* Left: Logo and Menus */}
+            {/* Left */}
             <Box
               sx={{
                 cursor: "pointer",
@@ -124,7 +133,6 @@ const ResponsiveHeader: React.FC = () => {
                 gap: 3,
               }}
             >
-              {/* Logo */}
               <Box
                 onClick={() => navigate("/")}
                 sx={{
@@ -139,8 +147,7 @@ const ResponsiveHeader: React.FC = () => {
               >
                 <BusinessIcon sx={{ color: "white", fontSize: 24 }} />
               </Box>
-
-              {/* Navigation - hidden on small screens */}
+              {/* Desktop Navigation */}
               {headerData.nav.map((item) =>
                 !isMobile ? (
                   <Button
@@ -158,6 +165,47 @@ const ResponsiveHeader: React.FC = () => {
                   </Button>
                 ) : null
               )}
+            </Box>
+
+            {/* Center: Search Bar (Desktop only) */}
+
+            <Box
+              sx={{
+                flex: 1,
+                mx: 5,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Paper
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: { xs: "auto", md: 380 },
+                  maxWidth: "100%",
+                  bgcolor: theme.palette.background.paper,
+                  boxShadow: "none",
+                  px: { xs: 1, md: 2 },
+                  py: { xs: 0.1, md: 0.5 },
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 5,
+                }}
+              >
+                <InputBase
+                  sx={{ mx: 1, flex: 1 }}
+                  placeholder="Search companies..."
+                  inputProps={{ "aria-label": "search companies" }}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearch}
+                />
+                <IconButton
+                  sx={{ p: { xs: "0px", md: "6px" } }}
+                  aria-label="search"
+                >
+                  <SearchIcon sx={{ fontSize: { xs: "15px", md: "20px" } }} />
+                </IconButton>
+              </Paper>
             </Box>
 
             {/* Right */}
@@ -178,7 +226,6 @@ const ResponsiveHeader: React.FC = () => {
                   />
                 </IconButton>
               )}
-
               {/* Hamburger Menu (Mobile Only) */}
               {isMobile && (
                 <>

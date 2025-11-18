@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -6,35 +6,52 @@ import {
   TextField,
   MenuItem,
   Grid,
-  InputAdornment,
+  useTheme,
 } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
 import type { FilterOptions } from "./models/filterOptions";
 import { industries, locations } from "../constants/mock-data";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { SortType } from "./enums/sortType";
 
 interface FilterSectionProps {
-  onFilter: (filters: FilterOptions) => void;
   isLoading: boolean;
 }
 
-export function FilterSection({ onFilter, isLoading }: FilterSectionProps) {
+export function FilterSection({ isLoading }: FilterSectionProps) {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q");
+  const { industry, location, sort } = useParams();
+  const navigate = useNavigate();
+  const theme = useTheme();
   const [filters, setFilters] = useState<FilterOptions>({
-    searchTerm: "",
-    industry: "All Industries",
-    location: "All Locations",
+    searchTerm: searchQuery || "",
+    industry: industry || "All",
+    location: location || "All",
+    sort: sort || SortType.RELEVANCE,
   });
 
-  const handleFilterChange = useCallback(
-    (newFilters: Partial<FilterOptions>) => {
-      const updatedFilters = { ...filters, ...newFilters };
-      setFilters(updatedFilters);
-      onFilter(updatedFilters);
-    },
-    [filters, onFilter]
-  );
+  useEffect(() => {
+    navigate(
+      `/companies?q=${filters.searchTerm}&industry=${filters.industry}&location=${filters.location}&sort=${filters.sort}`,
+      { replace: true }
+    );
+  }, [filters, navigate]);
+
+  const handleFilterChange = (name: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
-    <Card sx={{ mb: 4 }}>
+    <Card
+      sx={{
+        mb: 4,
+        boxShadow: "none",
+        border: `1px solid ${theme.palette.primary.main} `,
+      }}
+    >
       <CardContent sx={{ p: 3 }}>
         <Typography
           variant="h6"
@@ -52,23 +69,21 @@ export function FilterSection({ onFilter, isLoading }: FilterSectionProps) {
           {/* Search Input */}
           <Grid item xs={12} md={4}>
             <TextField
+              select
               fullWidth
-              placeholder="Search company name..."
-              value={filters.searchTerm}
-              onChange={(e) =>
-                handleFilterChange({ searchTerm: e.target.value })
-              }
+              value={filters.sort}
+              onChange={(e) => handleFilterChange("sort", e.target.value)}
               disabled={isLoading}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />
-                  </InputAdornment>
-                ),
-              }}
+              label="Sort by Company Rating"
               variant="outlined"
               size="small"
-            />
+            >
+              {Object.keys(SortType).map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
 
           {/* Industry Filter */}
@@ -77,7 +92,7 @@ export function FilterSection({ onFilter, isLoading }: FilterSectionProps) {
               select
               fullWidth
               value={filters.industry}
-              onChange={(e) => handleFilterChange({ industry: e.target.value })}
+              onChange={(e) => handleFilterChange("industry", e.target.value)}
               disabled={isLoading}
               label="Industry"
               variant="outlined"
@@ -97,7 +112,7 @@ export function FilterSection({ onFilter, isLoading }: FilterSectionProps) {
               select
               fullWidth
               value={filters.location}
-              onChange={(e) => handleFilterChange({ location: e.target.value })}
+              onChange={(e) => handleFilterChange("location", e.target.value)}
               disabled={isLoading}
               label="Location"
               variant="outlined"

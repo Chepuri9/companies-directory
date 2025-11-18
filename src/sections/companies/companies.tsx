@@ -11,11 +11,93 @@ import { FilterSection } from "../../components/filterSection";
 import { LoadingSkeleton } from "../../components/loadingSkeleton";
 import { CompanyCard } from "../../components/companyCard";
 import type { Company } from "../../components/models/company";
-import { useCompanies } from "../../hooks/hook";
+import { useSearchParams } from "react-router-dom";
+import { mockCompanies } from "../../constants/mock-data";
+import { useMemo, useState, useEffect } from "react";
+import { SortType } from "../../components/enums/sortType";
 
 export default function CompaniesPage() {
-  const { filteredCompanies, loading, error } = useCompanies();
   const theme = useTheme();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q");
+  const location = searchParams.get("location");
+  const industry = searchParams.get("industry");
+  const sort = searchParams.get("sort");
+  console.log("mockCompanies", mockCompanies);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log("searchQuery", searchQuery);
+  console.log("locarion,industry,sort ", location, industry, sort);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    try {
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    } catch (err) {
+      console.log(err);
+      setError(err instanceof Error ? err.message : "Failed to load companies");
+      setLoading(false);
+    }
+  }, [searchQuery, location, industry]);
+
+  const filteredCompanies = useMemo(() => {
+    let filtered = [...mockCompanies];
+    console.log("befor Serach", filtered);
+
+    if (searchQuery) {
+      const lowerSearch = searchQuery.toLowerCase();
+      filtered = filtered.filter((company) =>
+        company.name.toLowerCase().includes(lowerSearch)
+      );
+    }
+    console.log("After Serach", filtered);
+    console.log("befor location", filtered);
+    if (location && location.toLowerCase() !== "All".toLowerCase()) {
+      filtered = filtered.filter(
+        (company) => company.location.toLowerCase() === location.toLowerCase()
+      );
+    } else if (location && location.toLowerCase() === "All".toLowerCase()) {
+      filtered = [...filtered];
+    }
+
+    console.log("After location", filtered);
+    console.log("before industry", filtered);
+
+    if (industry && industry.toLowerCase() !== "All".toLowerCase()) {
+      filtered = filtered.filter(
+        (company) => company.industry.toLowerCase() === industry.toLowerCase()
+      );
+    } else if (industry && industry.toLowerCase() === "All".toLowerCase()) {
+      filtered = [...filtered];
+    }
+
+    console.log("after industry", filtered);
+
+    filtered.sort((a, b) => {
+      switch (sort) {
+        case SortType.ASC:
+          return a.rating - b.rating;
+
+        case SortType.DESC:
+          return b.rating - a.rating;
+
+        case SortType.RELEVANCE:
+          return 0;
+
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [searchQuery, location, industry, sort]);
 
   return (
     <Box
@@ -41,7 +123,7 @@ export default function CompaniesPage() {
           >
             Companies Directory
           </Typography>
-          <Typography color="text.secondary">
+          <Typography color="text.primary">
             Find and explore {filteredCompanies.length} companies
           </Typography>
         </Container>
@@ -52,10 +134,7 @@ export default function CompaniesPage() {
         <Container maxWidth="lg">
           {/* Filter Section */}
           <Box sx={{ mb: 4 }}>
-            <FilterSection
-              onFilter={() => console.log("filter applied")}
-              isLoading={loading}
-            />
+            <FilterSection isLoading={loading} />
           </Box>
 
           {/* Error State */}
@@ -69,20 +148,18 @@ export default function CompaniesPage() {
           {loading ? (
             <LoadingSkeleton />
           ) : filteredCompanies.length === 0 ? (
-            /* Empty State */
             <Box sx={{ textAlign: "center", py: 8 }}>
-              <Typography variant="h6" sx={{ mb: 2, color: "text.secondary" }}>
+              <Typography variant="h6" sx={{ mb: 2, color: "text.primary" }}>
                 No companies found matching your criteria.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.primary">
                 Try adjusting your filters to see more results.
               </Typography>
             </Box>
           ) : (
-            /* Companies Grid */
             <Grid container spacing={3}>
               {filteredCompanies.map((company: Company) => (
-                <Grid item xs={12} sm={6} md={4} key={company.id}>
+                <Grid item xs={12} sm={6} md={4} lg={3} key={company.id}>
                   <CompanyCard company={company} />
                 </Grid>
               ))}

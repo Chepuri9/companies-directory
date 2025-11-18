@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { LocationOn, People } from "@mui/icons-material";
 import type { Company } from "./models/company";
-import { Link } from "react-router-dom";
+
 interface CompanyCardProps {
   company: Company;
 }
@@ -19,170 +19,162 @@ export function CompanyCard({ company }: CompanyCardProps) {
   const theme = useTheme();
 
   return (
-    <Link to={`/companies/${company.id}`} style={{ textDecoration: "none" }}>
-      <Card
+    <Card
+      variant="outlined"
+      sx={{
+        border: `1.5px solid ${theme.palette.divider}`,
+        borderRadius: 3,
+        height: "100%",
+        boxShadow: "none",
+        transition: "border-color 0.15s cubic-bezier(0.4,0,0.2,1)",
+        bgColor: theme.palette.background.paper,
+        position: "relative",
+        overflow: "hidden",
+        "&:hover": {
+          borderColor: theme.palette.primary.main,
+          background: `linear-gradient(90deg, ${theme.palette.action.hover} 0%, ${theme.palette.background.paper} 100%)`,
+        },
+      }}
+    >
+      {/* Top Section: Logo & Industry */}
+      <Box
         sx={{
-          height: "100%",
-          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          cursor: "pointer",
-          position: "relative",
-          overflow: "hidden",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "3px",
-            background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.success.main})`,
-            opacity: 0,
-            transition: "opacity 0.3s ease",
-          },
-          "&:hover": {
-            boxShadow: "0 16px 32px rgba(0, 0, 0, 0.12)",
-            "&::before": {
-              opacity: 1,
-            },
-          },
+          p: 2,
+          pb: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
         }}
       >
-        {/* Header with logo and badge */}
-        <Box sx={{ p: 3, pb: 0 }}>
+        {/* Logo */}
+        <Box
+          sx={{
+            width: 64,
+            height: 64,
+            bgcolor: theme.palette.grey[100],
+            borderRadius: 2,
+            boxShadow: "none",
+            display: "flex",
+            alignItems: "start",
+            justifyContent: "center",
+            overflow: "hidden",
+            border: `1px solid ${theme.palette.grey[300]}`,
+            mr: 2,
+          }}
+        >
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              mb: 2,
-            }}
-          >
-            {/* Logo */}
-            <Box
-              sx={{
-                width: 72,
-                height: 72,
-                bgcolor: "#f1f5f9",
-                borderRadius: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <Box
-                component="img"
-                src={
-                  company.logo ||
-                  "/placeholder.svg?height=72&width=72&query=company logo"
-                }
-                alt={company.name}
-                width={72}
-                height={72}
-                style={{ objectFit: "cover" }}
-              />
-            </Box>
-            {/* Industry Badge */}
-            <Chip
-              label={company.industry}
-              size="small"
-              sx={{
-                bgcolor: "#dbeafe",
-                color: theme.palette.secondary.main,
-                fontWeight: 700,
-                fontSize: "0.75rem",
-              }}
-            />
-          </Box>
+            component="img"
+            src={company.logo || "/placeholder.svg"}
+            alt={company.name}
+            sx={{ maxWidth: "100%", maxHeight: "100%" }}
+          />
         </Box>
 
-        <CardContent sx={{ p: 3 }}>
-          {/* Company Name */}
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 700,
-              mb: 2,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              color: "primary.main",
-              fontSize: "1.05rem",
-            }}
-          >
-            {company.name}
-          </Typography>
+        {/* Industry */}
+        <Chip
+          label={company.industry}
+          size="small"
+          sx={{
+            fontWeight: 700,
+            fontSize: "0.81rem",
+            color: theme.palette.primary.main,
+            bgcolor: theme.palette.action.hover,
+            letterSpacing: "0.4px",
+          }}
+        />
+      </Box>
 
-          {/* Location */}
-          <Stack
-            direction="row"
-            spacing={0.5}
-            sx={{ mb: 2, alignItems: "center" }}
-          >
-            <LocationOn sx={{ fontSize: 18, color: "secondary.main" }} />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontWeight: 500 }}
-            >
-              {company.location}
-            </Typography>
-          </Stack>
+      {/* Content Section */}
+      <CardContent sx={{ px: 2, pt: 1, pb: 2 }}>
+        {/* Company Name */}
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            mb: 1,
+            color: theme.palette.text.primary,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            fontSize: "1.07rem",
+            whiteSpace: "normal",
+          }}
+        >
+          {company.name}
+        </Typography>
 
-          {/* Description */}
+        {/* Location */}
+        <Stack direction="row" spacing={0.7} alignItems="center" sx={{ mb: 1 }}>
+          <LocationOn
+            fontSize="small"
+            sx={{ color: theme.palette.info.dark }}
+          />
           <Typography
             variant="body2"
-            color="text.secondary"
-            sx={{
-              mb: 3,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              lineHeight: 1.5,
-            }}
+            sx={{ color: theme.palette.text.primary, fontWeight: 400 }}
           >
-            {company.description}
+            {company.location}
           </Typography>
+        </Stack>
 
-          {/* Footer Stats */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              pt: 2,
-              borderTop: "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Stack direction="row" spacing={0.3} sx={{ alignItems: "center" }}>
-              <Rating
-                value={company.rating}
-                readOnly
-                size="small"
-                precision={0.1}
-              />
-              <Typography variant="body2" fontWeight={700} sx={{ ml: 0.5 }}>
-                {company.rating}
-              </Typography>
-            </Stack>
-            <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
-              <People sx={{ fontSize: 18, color: "text.secondary" }} />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={600}
-              >
-                {(company.employees / 1000).toFixed(0)}K
-              </Typography>
-            </Stack>
-          </Box>
-        </CardContent>
-      </Card>
-    </Link>
+        {/* Description */}
+        <Typography
+          variant="body2"
+          color="text.primary"
+          sx={{
+            mb: 2,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            lineHeight: 1.5,
+            fontSize: "0.97rem",
+          }}
+        >
+          {company.description}
+        </Typography>
+
+        {/* Footer: Rating & Employee Count */}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          pt={1}
+        >
+          <Stack direction="row" spacing={0.4} alignItems="center">
+            <Rating
+              value={company.rating}
+              readOnly
+              size="small"
+              precision={0.1}
+            />
+            <Typography
+              variant="body2"
+              fontWeight={600}
+              sx={{ ml: 0.5, color: theme.palette.text.primary }}
+            >
+              {company.rating}
+            </Typography>
+          </Stack>
+          <Stack direction="row" spacing={0.6} alignItems="center">
+            <People
+              fontSize="small"
+              sx={{ color: theme.palette.action.active }}
+            />
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 600, color: theme.palette.text.primary }}
+            >
+              {company.employees > 999
+                ? `${Math.round(company.employees / 1000)}K`
+                : company.employees}
+            </Typography>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
